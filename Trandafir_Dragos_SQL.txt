@@ -1,0 +1,656 @@
+DROP TABLE Artist;
+DROP TABLE Stil;
+DROP TABLE Expozitie;
+DROP TABLE Client;
+DROP TABLE Adresa;
+DROP TABLE Arta;
+DROP TABLE Comanda;
+DROP TABLE Arta_Expusa;
+
+CREATE TABLE Artist (
+    artist_id INT NOT NULL,
+    nume VARCHAR2(30) NOT NULL,
+    prenume VARCHAR2(30) NOT NULL,
+    data_nastere DATE,
+    tara_origine VARCHAR2(20),
+    CONSTRAINT artist_pk PRIMARY KEY (artist_id)
+    
+);
+
+CREATE TABLE Stil (
+    stil_id INT NOT NULL,
+    nume_stil VARCHAR2(20),
+    CONSTRAINT stil_pk PRIMARY KEY (stil_id)
+    
+);
+
+CREATE TABLE Expozitie (
+    expozitie_id INT NOT NULL,
+    nume VARCHAR2(30) NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    tara VARCHAR2(20),
+    oras VARCHAR2(20),
+    CONSTRAINT expozitie_pk PRIMARY KEY (expozitie_id)
+    
+);
+
+CREATE TABLE Client (
+    client_id INT NOT NULL,
+    nume VARCHAR2(30) NOT NULL,
+    prenume VARCHAR2(30) NOT NULL,
+    nr_telefon VARCHAR2(10),
+    email VARCHAR2(40),
+    CONSTRAINT client_pk PRIMARY KEY (client_id)
+);
+
+CREATE TABLE Adresa (
+    adresa_id INT NOT NULL,
+    client_id INT NOT NULL,
+    tara VARCHAR2(20),
+    oras VARCHAR2(20),
+    adresa VARCHAR2(40),
+    CONSTRAINT adresa_pk PRIMARY KEY (adresa_id),
+    CONSTRAINT adresa_fk FOREIGN KEY (client_id) REFERENCES Client(client_id)
+);
+
+CREATE TABLE Arta(
+    art_id INT NOT NULL,
+    an INT,
+    titlu VARCHAR2(20),
+    pret INT,
+    descriere VARCHAR2(100),
+    artist_id INT NOT NULL,
+    stil_id INT NOT NULL,
+    CONSTRAINT arta_pk PRIMARY KEY (art_id),
+    CONSTRAINT arta_fk1 FOREIGN KEY (artist_id) REFERENCES Artist(artist_id),
+    CONSTRAINT arta_fk2 FOREIGN KEY (stil_id) REFERENCES Stil(stil_id)
+);
+
+CREATE TABLE Comanda(
+    comanda_id INT NOT NULL,
+    data DATE NOT NULL,
+    art_id INT NOT NULL,
+    client_id INT NOT NULL,
+    CONSTRAINT comanda_pk PRIMARY KEY (comanda_id),
+    CONSTRAINT comanda_fk1 FOREIGN KEY (art_id) REFERENCES Arta(art_id),
+    CONSTRAINT comanda_fk2 FOREIGN KEY (client_id) REFERENCES Client(client_id)
+);
+
+CREATE TABLE Arta_Expusa(
+    expozitie_id INT NOT NULL,
+    art_id INT NOT NULL,
+    CONSTRAINT arta_expusa_pk PRIMARY KEY (expozitie_id, art_id),
+    CONSTRAINT arta_expusa_fk1 FOREIGN KEY (expozitie_id) REFERENCES Expozitie(expozitie_id),
+    CONSTRAINT arta_expusa_fk2 FOREIGN KEY (art_id) REFERENCES Arta(art_id)
+);
+
+
+CREATE TABLE ORAS (
+    oras_id INT NOT NULL,
+    adresa_id INT NOT NULL,
+    nume_oras VARCHAR2(30),
+    judet VARCHAR2(30),
+    CONSTRAINT oras_pk PRIMARY KEY (oras_id),
+    CONSTRAINT oras_fk FOREIGN KEY (adresa_id) REFERENCES Adresa(adresa_id)
+);
+
+--- INSERARE
+
+
+INSERT INTO Client VALUES (1,'Popescu','Ion','0744258321','ion.popescu34@gmail.com');
+INSERT INTO Client VALUES (2,'Georgescu','Mariana','0751088235','mariangeorgescu12@gmail.com');
+INSERT INTO Client VALUES (3,'Axinte','Daniela','0745593834','danielaa24@yahoo.com');
+INSERT INTO Client VALUES (4,'Mihail','Alexandru','0761445958','mihailalex6@yahoo.com');
+INSERT INTO Client VALUES (5,'Birica','Andrei','0753210045','andrewbir99@gmail.com');
+
+INSERT INTO Adresa VALUES (1, 1, 'Romania', 'str. Iancului, nr. 23, bl. A5 , ap. 22');
+INSERT INTO Adresa VALUES (2, 2, 'Romania', 'str. Aviatiei , nr. 41 , bl. G2 , ap. 44');
+INSERT INTO Adresa VALUES (3, 3, 'Regatul Unit', 'str. Brick Lane, nr. 5 , bl. B3 , ap.5A');
+INSERT INTO Adresa VALUES (4, 4, 'Romania', 'str. Mioritei , nr. 11 , bl. F6 , ap. 10');
+INSERT INTO Adresa VALUES (5, 5, 'Romania', 'str. Matei Babes, nr. 9 , bl. D1 , ap. 8');
+
+INSERT INTO Oras VALUES (1, 1, 'Teleorman', 'Alexandria');
+INSERT INTO Oras VALUES (2, 2, 'Bucuresti', 'Bucuresti');
+INSERT INTO Oras VALUES (3, 3, 'Londra', 'Londra Mare');
+INSERT INTO Oras VALUES (4, 4, 'Bucuresti', 'Bucuresti');
+INSERT INTO Oras VALUES (5, 5, 'Iasi', 'Iasi');
+
+INSERT INTO Stil VALUES (1, 'Abstract');
+INSERT INTO Stil VALUES (2, 'Figurativ');
+INSERT INTO Stil VALUES (3, 'Floral');
+INSERT INTO Stil VALUES (4, 'Peisaje');
+INSERT INTO Stil VALUES (5, 'Nud');
+
+INSERT INTO Artist VALUES (1, 'Carafa', 'Florina', TO_DATE('1980-05-03', 'yyyy-mm-dd'), 'Romania');
+INSERT INTO Artist VALUES (2, 'Giacommo', 'Valentini', TO_DATE('1975-11-14', 'yyyy-mm-dd'), 'Italia');
+INSERT INTO Artist VALUES (3, 'Hanci', 'Flavius', TO_DATE('1990-08-23', 'yyyy-mm-dd'), 'Romania');
+INSERT INTO Artist VALUES (4, 'Vasilescu', 'Ana-Maria', TO_DATE('1993-04-15', 'yyyy-mm-dd'), 'Romania');
+INSERT INTO Artist VALUES (5, 'James', 'Robert', TO_DATE('1984-04-22', 'yyyy-mm-dd'), 'Regatul Unit');
+
+INSERT INTO Expozitie VALUES (1, 'National Gallery', TO_DATE('2018-02-13', 'yyyy-mm-dd'), TO_DATE ('2018-02-16', 'yyyy-mm-dd'), 'Regatul Unit', 'Londra');
+INSERT INTO Expozitie VALUES (2, 'Museum of Modern Art', TO_DATE('2019-04-15', 'yyyy-mm-dd'), TO_DATE ('2019-04-19', 'yyyy-mm-dd'), 'SUA', 'New York');
+INSERT INTO Expozitie VALUES (3, 'Elite Art Gallery', TO_DATE('2020-05-08', 'yyyy-mm-dd'), TO_DATE ('2020-05-13', 'yyyy-mm-dd'), 'Romania', 'Bucuresti');
+INSERT INTO Expozitie VALUES (4, 'Pilat Gallery', TO_DATE('2021-06-21', 'yyyy-mm-dd'), TO_DATE ('2021-06-24', 'yyyy-mm-dd'), 'Romania', 'Bucuresti');
+INSERT INTO Expozitie VALUES (5, 'Artep Gallery', TO_DATE('2021-04-13', 'yyyy-mm-dd'), TO_DATE ('2021-04-16', 'yyyy-mm-dd'), 'Romania', 'Iasi');
+
+INSERT INTO Arta VALUES (1, 2020, 'Love story', 2000, null, 1, 1);
+INSERT INTO Arta VALUES (2, 2016, 'Incatusare', 3500, null, 2, 1);
+INSERT INTO Arta VALUES (3, 2018, 'The Rust', 50000, 'The Rust este o lucrare inspirata din natura si imperfectiunea ei.', 3, 2);
+INSERT INTO Arta VALUES (4, 2014, 'Fetita cu coronita', 30000, 'Fetita cu coronita , ulei panza', 4, 2);
+INSERT INTO Arta VALUES (5, 2017, 'Freedom', 4000, null, 5, 3);
+INSERT INTO Arta VALUES (6, 2021, 'Floral Bliss', 2450, 'Lucrarea este pictata pe panza cu sasiu, cu sistem de prindere vertical', 1, 3);
+INSERT INTO Arta VALUES (7, 2021, 'Linistea Naturii', 3250, 'Pictura din panza de bumbac pe sasiu de lemn cu sistem de prindere, culori acrilice clasice, vernis.', 2, 4);
+INSERT INTO Arta VALUES (8, 2019, 'Amintiri in Verde', 20000, null, 3, 4);  
+INSERT INTO Arta VALUES (9, 2020, 'Genesis', 30000, 'Adam si Eva.', 4, 5);
+INSERT INTO Arta VALUES (10,2020, 'Melting lovers', 25000, null, 5, 5); 
+INSERT INTO Arta VALUES (11,2021, 'Elena', 4500, null, 1, 5);
+INSERT INTO Arta VALUES (12,2021, 'Mintea Libera', 3750, null, 2, 4);
+INSERT INTO Arta VALUES (13,2019, 'Parfum', 13500, null, 3, 3);
+INSERT INTO Arta VALUES (14,2020, 'Natalie', 10000, null, 4, 2);
+INSERT INTO Arta VALUES (15,2019, 'Fascinatie', 9000, 'Pictura vine intinsa pe sasiu profesional din lemn, cu pene de intindere.', 5, 1);
+
+INSERT INTO Comanda VALUES (1, TO_DATE('2021-06-21', 'yyyy-mm-dd'), 1, 3);
+INSERT INTO Comanda VALUES (2, TO_DATE('2017-03-14', 'yyyy-mm-dd'), 2, 4);
+INSERT INTO Comanda VALUES (3, TO_DATE('2019-06-11', 'yyyy-mm-dd'), 3, 2);
+INSERT INTO Comanda VALUES (4, TO_DATE('2019-11-30', 'yyyy-mm-dd'), 4, 3);
+INSERT INTO Comanda VALUES (5, TO_DATE('2017-11-30', 'yyyy-mm-dd'), 5, 3);
+INSERT INTO Comanda VALUES (6, TO_DATE('2021-08-05', 'yyyy-mm-dd'), 6, 5);
+INSERT INTO Comanda VALUES (7, TO_DATE('2021-09-24', 'yyyy-mm-dd'), 7, 1);
+INSERT INTO Comanda VALUES (8, TO_DATE('2020-01-20', 'yyyy-mm-dd'), 8, 2);
+INSERT INTO Comanda VALUES (9, TO_DATE('2021-01-05', 'yyyy-mm-dd'), 9, 4);
+INSERT INTO Comanda VALUES (10, TO_DATE('2020-05-13', 'yyyy-mm-dd'), 10, 1);
+
+INSERT INTO Arta_Expusa VALUES (1, 3);
+INSERT INTO Arta_Expusa VALUES (1, 4);
+INSERT INTO Arta_Expusa VALUES (2, 8);
+INSERT INTO Arta_Expusa VALUES (2, 15);
+INSERT INTO Arta_Expusa VALUES (3, 9);
+INSERT INTO Arta_Expusa VALUES (3, 10);
+INSERT INTO Arta_Expusa VALUES (4, 11);
+INSERT INTO Arta_Expusa VALUES (4, 12);
+INSERT INTO Arta_Expusa VALUES (5, 6);
+INSERT INTO Arta_Expusa VALUES (5, 7);
+
+
+-- Rezolvari
+
+--6. Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat care s?
+-- utilizeze dou? tipuri de colec?ie studiate. Apela?i subprogramul.
+
+-- Pentru un id de artist introdus la tastatura, sa se afiseze ce piese de arta a creat si pretul acestora.
+
+
+create or replace procedure arta_si_pret
+    (v_id_artist Artist.artist_id%type)
+as
+    type tablou_index is table of Arta%rowtype index by pls_integer;
+    t1 tablou_index;
+    --v_art_id Arta.art_id%type;
+    type varr is varray(10) of INTEGER;
+    t2 varr := varr();
+    --i number;
+begin
+    --i := 0;
+    select *
+    bulk collect into t1 from Arta
+    where artist_id = v_id_artist;
+    
+    t2.extend(t1.count);    
+    for ind in 1..t1.count loop
+        t2(ind) := t1(ind).pret;
+    end loop;
+    
+    for ind in 1..t1.count loop
+        dbms_output.put_line('Titlul ' || t1(ind).titlu || ' are pretul ' || t2(ind) ||'.');
+    end loop;
+end arta_si_pret;
+/
+execute arta_si_pret(3);
+/
+
+
+
+-- 7.  Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat care s?
+--utilizeze un tip de cursor studiat. Apela?i subprogramul.
+
+-- Sa se afiseze piesele de arta a caror pret depaseste 10000
+
+create or replace procedure pret_dep_arta is
+    cursor l_arta is
+        select * from Arta
+        where pret > 10000;
+    v_arta l_arta%rowtype;
+begin
+    open l_arta;
+    loop
+        fetch l_arta into v_arta;
+        exit when l_arta%notfound;
+        dbms_output.put_line(l_arta%rowcount || '. ' || v_arta.titlu);
+    end loop;
+    close l_arta;
+end pret_dep_arta;
+/
+execute pret_dep_arta;
+/
+
+-- 8. Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat de tip
+--func?ie care s? utilizeze într-o singur? comand? SQL 3 dintre tabelele definite. Trata?i toate excep?iile
+--care pot ap?rea. Apela?i subprogramul astfel încât s? eviden?ia?i toate cazurile tratate.
+
+-- Pentru id-ul unui client dat sa se afiseze cat a cheltuit in total pe piesele pe care
+-- le-a comandat
+
+create or replace function afisare_arta_client
+(v_client_id Client.client_id%type)
+return number is
+    rezultat number;
+    clientel number;
+begin
+    select client_id into clientel
+    from Client
+    where client_id = v_client_id;
+
+    select sum (a.pret) into rezultat
+    from Arta a
+    join Comanda cc on (a.art_id = cc.art_id)
+    join Client c on (cc.client_id = c.client_id)
+    where c.client_id = v_client_id;
+            
+    return rezultat;
+    
+exception
+    when no_data_found then
+        dbms_output.put_line('Clientul introdus nu exista in baza de date');
+    when others then
+        dbms_output.put_line('Alta eroare');
+
+end afisare_arta_client;
+/
+
+begin
+dbms_output.put_line('Clientul cu id-ul 2 a cheltuit ' || afisare_arta_client(2));    
+end;
+/
+
+
+begin
+dbms_output.put_line('Clientul cu id-ul 7 a cheltuit ' || afisare_arta_client(7));
+end;
+/
+
+
+--- 9.Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat de tip
+--procedur? care s? utilizeze într-o singur? comand? SQL 5 dintre tabelele definite. Trata?i toate
+--excep?iile care pot ap?rea, incluzând excep?iile NO_DATA_FOUND ?i TOO_MANY_ROWS. Apela?i
+--subprogramul astfel încât s? eviden?ia?i toate cazurile tratate.
+
+
+-- Pentru un artist dat sa se afiseze detaliile pentru picturile expuse si a expozitiilor din care fac parte.
+-- (an, titlu, pret, descriere, stil, nume expozitie, tara, oras)
+create or replace procedure artstyle
+(v_nume Artist.nume%type, v_prenume Artist.prenume%type)
+is
+v_artist_id Artist.artist_id%type;
+
+type t_detalii is record(
+    artist_id Artist.artist_id%type,
+    art_id Arta.art_id%type,
+    titlul Arta.titlu%type,
+    an Arta.an%type,
+    pret Arta.pret%type,
+    descriere Arta.descriere%type,
+    nume_stil Stil.nume_stil%type,
+    nume_expozitie Expozitie.nume%type,
+    tara Expozitie.tara%type,
+    oras Expozitie.oras%type
+    --art_id Arta_expusa.art_id%type
+);
+
+
+detalii t_detalii;
+
+
+cursor c_detalii return t_detalii is
+    select ar.artist_id, a.art_id, a.titlu, a.an, a.pret, a.descriere, s.nume_stil, e.nume, e.tara, e.oras
+    from Artist ar join Arta a on (ar.artist_id = a.artist_id)
+    join Stil s on (a.stil_id = s.stil_id)
+    join Arta_expusa ae on (a.art_id = ae.art_id)
+    join Expozitie e on (e.expozitie_id = ae.expozitie_id)
+    where ar.artist_id = v_artist_id;
+
+
+begin
+    select artist_id into v_artist_id
+    from Artist
+    where lower(nume) like lower(v_nume)
+    and lower(prenume) like lower(v_prenume);
+    
+    dbms_output.put_line('Artistul ' || v_nume ||' ' || v_prenume || ' a expus: ');
+    dbms_output.put_line('');
+    
+    open c_detalii;
+    loop
+        fetch c_detalii into detalii;
+        exit when c_detalii%notfound;
+        
+                
+    if detalii.art_id is not null then
+        dbms_output.put_line('Titlu: ' || detalii.titlul);
+        dbms_output.put_line('An: ' || detalii.an);
+        dbms_output.put_line('Stil: ' || detalii.nume_stil);
+        dbms_output.put_line('Pret: ' || detalii.pret);
+        dbms_output.put_line('Descriere: ' || detalii.descriere);
+        dbms_output.put_line('Expozitie: ' || detalii.nume_expozitie);
+        dbms_output.put_line('Tara: ' || detalii.tara);
+        dbms_output.put_line('Oras: ' || detalii.oras);
+        dbms_output.put_line('');
+    end if;
+    end loop;
+    close c_detalii;
+    
+    exception
+        when no_data_found then
+            dbms_output.put_line('Nu exista artist cu numele asta.');
+        when too_many_rows then
+            dbms_output.put_line('Exista mai multi artisti cu numele asta.');
+        when others then
+            dbms_output.put_line('Alte erori');
+
+end artstyle;
+/
+
+
+
+
+-- input corect
+execute artstyle('Carafa','Florina'); 
+-- nu exista acest artist
+execute artstyle('George','Clooney');
+-- mai multi cu acest nume
+execute artstyle('%', '%');
+    
+    
+-- 10. Defini?i un trigger de tip LMD la nivel de comand?. Declan?a?i trigger-ul.
+
+-- Sa nu se permita ca numarul de comenzi sa-l depaseasca
+-- pe cel al pieselor de arta
+
+create or replace trigger com_arta
+    before insert on Comanda
+declare
+    nr_comenzi INT;
+    nr_piese INT;
+begin
+    select count(comanda_id) into nr_comenzi from Comanda;
+    select count(art_id) into nr_piese from Arta;
+    
+    if nr_piese < nr_comenzi then
+        raise_application_error(-20001, 'Ati depasit limita.');
+    end if;
+end;
+/
+
+
+-- Testam triggeru
+begin
+    for i in 11..17 loop
+        insert into Comanda values(i, TO_DATE('2020-05-13', 'yyyy-mm-dd'), 6, 1);
+    end loop;
+    
+end;
+
+delete from Comanda where comanda_id > 10;
+drop trigger com_arta;
+
+
+-- 11. Defini?i un trigger de tip LMD la nivel de linie. Declan?a?i trigger-ul.
+
+
+-- Sa nu se poata introduce/edita piese de arta cu pret sub 250
+
+create or replace trigger trigg_price
+    before update or insert on Arta for each row
+declare
+    v_pret Arta.pret%type;
+begin
+    
+        if :new.pret < 250 then
+            raise_application_error(-20001, 'Ati introdus o data incorecta');
+        end if;
+ 
+end;
+/
+
+INSERT INTO Arta VALUES (16, 2022, 'Test', 100, 'test', 1, 1);
+update Arta
+set pret = 100
+where art_id = 3;
+
+
+
+-- 12. Defini?i un trigger de tip LDD. Declan?a?i trigger-ul.
+
+-- A permite alterare si "drop"-ul de tabele la dezactivarea triggerului
+
+create table test (
+    test1 int primary key
+);
+
+create trigger siguranta
+    before create or alter or drop on schema
+begin
+    raise_application_error(-20001, 'Trebuie sa dezactivati intai triggerul.');
+end;
+
+alter table test add test2 varchar(23);
+
+drop trigger siguranta;
+drop table test;
+
+-- pachet
+
+create or replace package proiect_drg is
+    procedure arta_si_pret (v_id_artist Artist.artist_id%type);
+    procedure pret_dep_arta;
+    function afisare_arta_client (v_client_id Client.client_id%type) return number;
+    procedure artstyle (v_nume Artist.nume%type, v_prenume Artist.prenume%type);
+   
+end proiect_drg;
+/
+
+create or replace package body proiect_drg is
+    --6. Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat care s?
+-- utilizeze dou? tipuri de colec?ie studiate. Apela?i subprogramul.
+
+-- Pentru un id de artist introdus la tastatura, sa se afiseze ce piese de arta a creat si pretul acestora.
+
+    procedure arta_si_pret
+        (v_id_artist Artist.artist_id%type)
+    as
+        type tablou_index is table of Arta%rowtype index by pls_integer;
+        t1 tablou_index;
+        --v_art_id Arta.art_id%type;
+        type varr is varray(10) of INTEGER;
+        t2 varr := varr();
+       --i number;
+    begin
+        --i := 0;
+        select *
+        bulk collect into t1 from Arta
+        where artist_id = v_id_artist;
+    
+        t2.extend(t1.count);    
+        for ind in 1..t1.count loop
+            t2(ind) := t1(ind).pret;
+        end loop;
+    
+        for ind in 1..t1.count loop
+            dbms_output.put_line('Titlul ' || t1(ind).titlu || ' are pretul ' || t2(ind) ||'.');
+        end loop;
+      
+    end arta_si_pret;
+
+-- 7.  Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat care s?
+--utilizeze un tip de cursor studiat. Apela?i subprogramul.
+
+-- Sa se afiseze piesele de arta a caror pret depaseste 10000
+    
+procedure pret_dep_arta is
+    cursor l_arta is
+        select * from Arta
+        where pret > 10000;
+    v_arta l_arta%rowtype;
+begin
+    open l_arta;
+    loop
+        fetch l_arta into v_arta;
+        exit when l_arta%notfound;
+        dbms_output.put_line(l_arta%rowcount || '. ' || v_arta.titlu);
+    end loop;
+    close l_arta;
+end pret_dep_arta;
+
+-- 8. Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat de tip
+--func?ie care s? utilizeze într-o singur? comand? SQL 3 dintre tabelele definite. Trata?i toate excep?iile
+--care pot ap?rea. Apela?i subprogramul astfel încât s? eviden?ia?i toate cazurile tratate.
+
+-- Pentru id-ul unui client dat sa se afiseze cat a cheltuit in total pe piesele pe care
+-- le-a comandat
+
+function afisare_arta_client
+(v_client_id Client.client_id%type)
+return number is
+    rezultat number;
+    clientel number;
+begin
+    select client_id into clientel
+    from Client
+    where client_id = v_client_id;
+
+    select sum (a.pret) into rezultat
+    from Arta a
+    join Comanda cc on (a.art_id = cc.art_id)
+    join Client c on (cc.client_id = c.client_id)
+    where c.client_id = v_client_id;
+            
+    return rezultat;
+    
+exception
+    when no_data_found then
+        dbms_output.put_line('Clientul introdus nu exista in baza de date');
+    when others then
+        dbms_output.put_line('Alta eroare');
+
+end afisare_arta_client;
+
+
+-- 9.Formula?i în limbaj natural o problem? pe care s? o rezolva?i folosind un subprogram stocat de tip
+--procedur? care s? utilizeze într-o singur? comand? SQL 5 dintre tabelele definite. Trata?i toate
+--excep?iile care pot ap?rea, incluzând excep?iile NO_DATA_FOUND ?i TOO_MANY_ROWS. Apela?i
+--subprogramul astfel încât s? eviden?ia?i toate cazurile tratate.
+
+
+-- Pentru un artist dat sa se afiseze detaliile pentru picturile expuse si a expozitiilor din care fac parte.
+-- (an, titlu, pret, descriere, stil, nume expozitie, tara, oras)
+procedure artstyle
+(v_nume Artist.nume%type, v_prenume Artist.prenume%type)
+is
+v_artist_id Artist.artist_id%type;
+
+type t_detalii is record(
+    artist_id Artist.artist_id%type,
+    art_id Arta.art_id%type,
+    titlul Arta.titlu%type,
+    an Arta.an%type,
+    pret Arta.pret%type,
+    descriere Arta.descriere%type,
+    nume_stil Stil.nume_stil%type,
+    nume_expozitie Expozitie.nume%type,
+    tara Expozitie.tara%type,
+    oras Expozitie.oras%type
+    --art_id Arta_expusa.art_id%type
+);
+
+
+detalii t_detalii;
+
+
+cursor c_detalii return t_detalii is
+    select ar.artist_id, a.art_id, a.titlu, a.an, a.pret, a.descriere, s.nume_stil, e.nume, e.tara, e.oras
+    from Artist ar join Arta a on (ar.artist_id = a.artist_id)
+    join Stil s on (a.stil_id = s.stil_id)
+    join Arta_expusa ae on (a.art_id = ae.art_id)
+    join Expozitie e on (e.expozitie_id = ae.expozitie_id)
+    where ar.artist_id = v_artist_id;
+
+
+begin
+    select artist_id into v_artist_id
+    from Artist
+    where lower(nume) like lower(v_nume)
+    and lower(prenume) like lower(v_prenume);
+    
+    dbms_output.put_line('Artistul ' || v_nume ||' ' || v_prenume || ' a expus: ');
+    dbms_output.put_line('');
+    
+    open c_detalii;
+    loop
+        fetch c_detalii into detalii;
+        exit when c_detalii%notfound;
+        
+                
+    if detalii.art_id is not null then
+        dbms_output.put_line('Titlu: ' || detalii.titlul);
+        dbms_output.put_line('An: ' || detalii.an);
+        dbms_output.put_line('Stil: ' || detalii.nume_stil);
+        dbms_output.put_line('Pret: ' || detalii.pret);
+        dbms_output.put_line('Descriere: ' || detalii.descriere);
+        dbms_output.put_line('Expozitie: ' || detalii.nume_expozitie);
+        dbms_output.put_line('Tara: ' || detalii.tara);
+        dbms_output.put_line('Oras: ' || detalii.oras);
+        dbms_output.put_line('');
+    end if;
+    end loop;
+    close c_detalii;
+    
+    exception
+        when no_data_found then
+            dbms_output.put_line('Nu exista artist cu numele asta.');
+        when too_many_rows then
+            dbms_output.put_line('Exista mai multi artisti cu numele asta.');
+        when others then
+            dbms_output.put_line('Alte erori');
+
+end artstyle;
+
+
+end proiect_drg;
+/
+
+
+-- Comenzi pachet
+
+-- 6
+execute proiect_drg.arta_si_pret(3);
+
+-- 7
+execute proiect_drg.pret_dep_arta;
+
+-- 8
+begin
+dbms_output.put_line('Clientul cu id-ul 2 a cheltuit ' || proiect_drg.afisare_arta_client(2));    
+end;
+
+begin
+dbms_output.put_line('Clientul cu id-ul 7 a cheltuit ' || proiect_drg.afisare_arta_client(7));
+end;
+
+-- 9
+
+-- input corect
+execute proiect_drg.artstyle('Carafa','Florina'); 
+-- nu exista acest artist
+execute proiect_drg.artstyle('George','Clooney');
+-- mai multi cu acest nume
+execute proiect_drg.artstyle('%', '%');
